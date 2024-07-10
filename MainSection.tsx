@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-
+import PropTypes from 'prop-types'
 import { SectionList, View, SafeAreaView,StyleSheet,Text,Alert } from 'react-native'
 import IconCheckBox from './IconCheckBox';
 // import cellDataModel from './tools/cellDataModel'
@@ -44,20 +44,18 @@ const styles = StyleSheet.create({
   },
 })
 
-const TodoList = observer(({store_data}:any) => (
+const TodoList = observer((par:any) => (
   
     <>
 
     <View style={styles.item}>
-      {console.log("MainSection.TodoList:"+store_data)}
-      <TodoItem todo={store_data}/>
+      {console.log("MainSection.TodoList todo:"+JSON.stringify(par.todo, null, 2))}
+      {/* {console.log("MainSection.TodoList store:"+JSON.stringify(par.store, null, 2))} */}
+      <TodoItem todo={par.todo} store={par.store}/>
 
-    {/* {
-      store.forEach((todo: any) => {
-        console.log("TodoList forEach todo"+todo);
-        <TodoItem key={todo.id} todo={todo} store={store} />
-      })
-    } */}
+      {/* {par.store.visibleTodos.map((todo: any) =>
+      <TodoItem todo={todo} store={par.store} />
+    )} */}
       
     </View>
     </>
@@ -72,50 +70,28 @@ class MainSection extends Component<any,any> {
     console.log('1234');
 
   };
+  static propTypes: { store: PropTypes.Validator<object>; };
 
   render() {
     console.log("MainSection.render");
     const { store } = this.props;
     // console.log("MainSection.store:"+store);
     // console.log("MainSection.storeVisibleTodos:"+store.visibleTodos);
-    console.log("MainSection.storeVisibleTodos:"+JSON.stringify(store.visibleTodos, null, 2));
-    const sectionsTest = [
-      {
-        title: 'Group 1',
-        data: [{
-          text: 'Item' ,
-          id: 1,
-          CheckBoxState: false,
-          favoritesState: false,
-        }, {
-          text: 'Item' ,
-          id: 2,
-          CheckBoxState: false,
-          favoritesState: false,
-        }],
-      },
-      {
-        title: 'Group 2',
-        data: [{
-          text: 'Item' ,
-          id: 3,
-          CheckBoxState: true,
-          favoritesState: false,
-        }],
-      },
-    ];
-
+    // console.log("MainSection.storeVisibleTodos:"+JSON.stringify(store.visibleTodos, null, 2));
+ 
+    // {console.log("MainSection.render store:"+JSON.stringify(store, null, 2))}
     return (
       
         <SafeAreaView style={styles.safeArea}>
 
           {/* <TodoList store={store} /> */}
-          
-          <SectionList
-            sections={store.visibleTodos}
 
-            keyExtractor={(item, index) => item.text + index}
-            renderItem={({item}) => (<TodoList store_data={item}/>) }
+          <SectionList
+            sections={store.visibleSectionListTodos()}
+
+            keyExtractor={(item, index) => (item.text + index)}
+            
+            renderItem={({item}) => (<TodoList todo={item} store={store}/>) }
 
             renderSectionHeader={({section: {title}}) => (
               <Text style={styles.header}>{title}</Text>
@@ -133,10 +109,9 @@ class MainSection extends Component<any,any> {
             ListHeaderComponent={() => {
               return <Text style={{fontSize: 30,textAlign:"center",color:"#ffff"}}>ToDoList</Text>;
             }}
-
           />
 
-            <IconCheckBox checkOn='➕' checkOff='➕' size={55} onToggle={() =>{
+            <IconCheckBox checkOn='➕' checkOff='➕' size={55} onPress={() =>{
 
               console.log('handleAddData');
               // store[0].data.push(new cellDataModel('add test',false,false))
@@ -147,7 +122,9 @@ class MainSection extends Component<any,any> {
   }
 }
 
-
+MainSection.propTypes = {
+  store: PropTypes.object.isRequired,
+}
 
 export default MainSection
 

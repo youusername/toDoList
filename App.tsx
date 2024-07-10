@@ -12,8 +12,8 @@ for (var i = 0; i < 5; i++) {
   initialState.push({
     text: 'Item' + i,
     id: i+1,
-    CheckBoxState: false,
-    favoritesState: false,
+    CheckBoxState: Boolean(i%2),
+    favoritesState: !Boolean(i%2),
   });
 
 }

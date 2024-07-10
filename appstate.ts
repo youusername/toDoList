@@ -1,42 +1,48 @@
 import { observable, computed, action } from 'mobx'
 
-export const SHOW_ALL = 'show_all'
-export const SHOW_COMPLETED = 'show_completed'
-export const SHOW_ACTIVE = 'show_active'
 
 class AppState {
 
   @observable todos: any[];
+
 
   constructor(initialTodos: any) {
     this.todos = initialTodos || []
   }
 
   @computed get visibleTodos() {
-     const inProgress: any[] = []
-     const doneProgress: any[] = []
-     this.todos.forEach(todo => {
-      console.log(todo);
-      if (todo.CheckBoxState){
-        doneProgress.push(todo)
-      }else{
-        inProgress.push(todo)
-      }
-    });
-    const sections = [
-      {
-        title: '进行中',
-        data: inProgress,
-      },
-      {
-        title: '已完成',
-        data: doneProgress,
-      },
-    ];
-    return sections;
+    return this.todos
   }
 
+  visibleSectionListTodos() {
+    const inProgress: any[] = []
+    const doneProgress: any[] = []
+    this.todos.forEach(todo => {
+     console.log(todo);
+     if (todo.CheckBoxState){
+       doneProgress.push(todo)
+     }else{
+       inProgress.push(todo)
+     }
+   });
+   const sections = [
+     {
+       title: '进行中',
+       data: inProgress,
+     },
+     {
+       title: '已完成',
+       data: doneProgress,
+     },
+   ];
+   return sections;
+ }
+ @computed get completedCount() {
+  console.log("AppState completedCount")
+  return this.todos.filter(todo => todo.CheckBoxState).length
+}
   findTodo = (id: number) => {
+    console.log("AppState.findTodo id:"+id)
     return this.todos.find((todo: any) => todo.id === id)
   }
 
@@ -80,18 +86,23 @@ class AppState {
     }
   }
 
-  @action completeTodo = (id: number) => {
+  completeTodo = (id: number) => {
+    console.log("AppState.completeTodo id:"+id);
     const todo = this.findTodo(id);
     if (todo) {
       todo.CheckBoxState = !todo.CheckBoxState;
     }
+    // console.log("AppState.completeTodo.id:["+id+"]  CheckBoxState:["+todo.CheckBoxState);
+
   }
 
-  @action favoritesTodo = (id: number) => {
+  favoritesTodo = (id: number) => {
+    console.log("AppState.favoritesTodo id:"+id);
     const todo = this.findTodo(id);
     if (todo) {
       todo.favoritesState = !todo.favoritesState;
     }
+    // console.log("AppState.favoritesTodo.id:["+id+"]  favoritesState:["+todo.favoritesState);
   }
 }
 
