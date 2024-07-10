@@ -3,7 +3,7 @@ import { observable, computed, action } from 'mobx'
 
 class AppState {
 
-  @observable todos: any[];
+  @observable todos: any[] = [];
 
 
   constructor(initialTodos: any) {

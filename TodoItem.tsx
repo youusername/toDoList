@@ -30,7 +30,7 @@ class TodoItem extends Component<any,any> {
             <>
             <IconCheckBox checkOn='●' checkOff='◯' stateChecked={todo.CheckBoxState} todo={todo} onPress={() => store.completeTodo(todo.id)}/>
             <Text style={[styles.title,todo.CheckBoxState ? styles.strikethroughText : {}]}>{todo.text}</Text>
-            <FavoritesCheckBox checkOn='★' checkOff='☆' stateChecked={todo.favoritesState} todo={todo}onPress={store.favoritesTodo(todo.id)}/>
+            <FavoritesCheckBox checkOn='★' checkOff='☆' stateChecked={todo.favoritesState} todo={todo}onPress={() => store.favoritesTodo(todo.id)}/>
             </>
         )
       }
