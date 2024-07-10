@@ -20,7 +20,7 @@ class TodoItem extends Component<any,any> {
       render() {
 
         const { todo ,store} = this.props
-        console.log("TodoItem render:"+todo.id +"  CheckBoxState:"+todo.CheckBoxState);
+        // console.log("TodoItem render:"+todo.id +"  CheckBoxState:"+todo.CheckBoxState);
         console.log("TodoItem render")
 
         return (

@@ -14,8 +14,6 @@ const styles = StyleSheet.create({
 
 class IconCheckBox extends Component<any,any> {
   static propTypes: {
-    todo: PropTypes.Validator<object>;
-    store: PropTypes.Validator<object>; 
     checkOn: PropTypes.Validator<string>; 
     checkOff: PropTypes.Validator<string>; 
     stateChecked: PropTypes.Validator<boolean>; 
@@ -28,10 +26,8 @@ class IconCheckBox extends Component<any,any> {
 
   }
 
-
-
   render() {
-    const { todo,stateChecked, checkOn, checkOff,store ,onPress=() =>{}} = this.props;
+    const {stateChecked, checkOn, checkOff ,onPress=() =>{}} = this.props;
     const { size = 30 } = this.props;
     // console.log("iconcheckbox.render:"+JSON.stringify(todo, null, 2));
     return (
@@ -44,11 +40,10 @@ class IconCheckBox extends Component<any,any> {
 }
 
 IconCheckBox.propTypes = {
-  todo: PropTypes.object.isRequired,
   stateChecked: PropTypes.bool.isRequired,
   checkOn: PropTypes.string.isRequired,
   checkOff: PropTypes.string.isRequired,
-  store: PropTypes.object.isRequired,
+
 }
 
 export default IconCheckBox;

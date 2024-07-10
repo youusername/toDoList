@@ -5,21 +5,8 @@ import { SectionList, View, SafeAreaView,StyleSheet,Text,Alert } from 'react-nat
 import IconCheckBox from './IconCheckBox';
 // import cellDataModel from './tools/cellDataModel'
 import TodoItem from './TodoItem';
-// import { serializer } from './metro.config';
+import EditModal from './EditModal';
 
-// const ToggleAll = observer(({ store }) =>
-//   <input className="toggle-all"
-//     type="checkbox"
-//     checked={store.completedCount === store.todos.length}
-//     onChange={() => store.completeAll() } />
-// )
-// const TodoList = observer(({ store }) =>
-//   <ul className="todo-list">
-//     {store.visibleTodos.map(todo =>
-//       <TodoItem key={todo.id} todo={todo} store={store} />
-//     )}
-//   </ul>
-// )
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -49,7 +36,7 @@ const TodoList = observer((par:any) => (
     <>
 
     <View style={styles.item}>
-      {console.log("MainSection.TodoList todo:"+JSON.stringify(par.todo, null, 2))}
+      {/* {console.log("MainSection.TodoList todo:"+JSON.stringify(par.todo, null, 2))} */}
       {/* {console.log("MainSection.TodoList store:"+JSON.stringify(par.store, null, 2))} */}
       <TodoItem todo={par.todo} store={par.store}/>
 
@@ -61,14 +48,30 @@ const TodoList = observer((par:any) => (
     </>
   ));
 
-
+@observer
 class MainSection extends Component<any,any> {
+  editModalRef: React.RefObject<EditModal>
+  constructor(props: any) {
+    super(props);
+    this.editModalRef = React.createRef();
+  }
+
+  openEditModal = () => {
+    this.editModalRef.current?.openModal();
+  };
+  closeEditModal = () => {
+    this.editModalRef.current?.closeModal();
+  };
 
 
   handleCheckBoxToggle = (_:any) => {
     // Alert.alert(`CheckBox is now '}`+newState);
     console.log('1234');
 
+  };
+  handleConfirm = (text:any, isChecked:any) => {
+    console.log('Text:', text);
+    console.log('Checked:', isChecked);
   };
   static propTypes: { store: PropTypes.Validator<object>; };
 
@@ -113,9 +116,14 @@ class MainSection extends Component<any,any> {
 
             <IconCheckBox checkOn='➕' checkOff='➕' size={55} onPress={() =>{
 
-              console.log('handleAddData');
-              // store[0].data.push(new cellDataModel('add test',false,false))
+              console.log('handle AddData')
+              this.openEditModal()
+              // store.addTodo('new todo')
+
             }} />
+            {/* <View style={styles.container}> */}
+              <EditModal ref={this.editModalRef} onConfirm = {() =>this.handleConfirm} />
+            {/* </View> */}
           </SafeAreaView>
           
     )

@@ -11,10 +11,12 @@ class AppState {
   }
 
   @computed get visibleTodos() {
+    console.log("AppState visibleTodos")
     return this.todos
   }
 
   visibleSectionListTodos() {
+    console.log("AppState visibleSectionListTodos")
     const inProgress: any[] = []
     const doneProgress: any[] = []
     this.todos.forEach(todo => {
