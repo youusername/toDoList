@@ -69,9 +69,11 @@ class MainSection extends Component<any,any> {
     console.log('1234');
 
   };
-  handleConfirm = (text:any, isChecked:any) => {
+  handleConfirm = (text:String, isChecked:any) => {
+    console.log('MainSection handleConfirm');
+
     console.log('Text:', text);
-    console.log('Checked:', isChecked);
+    this.props.store.addTodo(text,isChecked)
   };
   static propTypes: { store: PropTypes.Validator<object>; };
 
@@ -114,15 +116,15 @@ class MainSection extends Component<any,any> {
             }}
           />
 
-            <IconCheckBox checkOn='➕' checkOff='➕' size={55} onPress={() =>{
+            <IconCheckBox checkOn='➕' checkOff='➕' stateChecked={false} todo={null} size={55} onPress={() =>{
 
-              console.log('handle AddData')
+              console.log('MainSection IconCheckBox onPress')
               this.openEditModal()
               // store.addTodo('new todo')
-
             }} />
+            
             {/* <View style={styles.container}> */}
-              <EditModal ref={this.editModalRef} onConfirm = {() =>this.handleConfirm} />
+              <EditModal ref={this.editModalRef} onConfirm = {this.handleConfirm} />
             {/* </View> */}
           </SafeAreaView>
           

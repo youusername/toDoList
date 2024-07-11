@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, KeyboardAvoidingView } from 'react-native';
-import PropTypes from 'prop-types';
+import { Alert, View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, KeyboardAvoidingView } from 'react-native';
+
+import { observer } from 'mobx-react';
 
 interface EditModalProps {
   onConfirm: (inputValue: string, checkBoxChecked: boolean) => void;
@@ -14,9 +15,12 @@ interface EditModalState {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor:'red',
+    width: 0,
+    height: 0,
   },
   openButton: {
     padding: 10,
@@ -44,15 +48,16 @@ const styles = StyleSheet.create({
   checkBoxContainer: {
     width: 30,
     height: 30,
-    borderRadius: 5,
+    borderRadius: 15,
     borderWidth: 2,
     borderColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
+    backgroundColor: 'white',
   },
   checkBoxChecked: {
-    backgroundColor: 'green',
+    backgroundColor: 'black',
   },
   checkBoxText: {
     fontSize: 24,
@@ -78,6 +83,7 @@ const styles = StyleSheet.create({
   },
 });
 
+@observer
 class EditModal extends Component<EditModalProps, EditModalState> {
   constructor(props: EditModalProps) {
     super(props);
@@ -88,43 +94,51 @@ class EditModal extends Component<EditModalProps, EditModalState> {
     };
   }
 
-  openModal = () => {
-    this.setState({ modalVisible: true });
+  openModal = (text: string='',CheckBoxState: boolean = false) => {
+    console.log('EditModal openModal');
+    this.setState({ modalVisible: true ,inputValue: text, checkBoxChecked: CheckBoxState });
   };
 
   closeModal = () => {
+    console.log('EditModal closeModal');
     this.setState({ modalVisible: false, inputValue: '', checkBoxChecked: false });
   };
 
   handleConfirm = () => {
+    console.log('EditModal handleConfirm');
+    
     const { inputValue, checkBoxChecked } = this.state;
+    if(inputValue.length<=0){
+        Alert.alert(`todo title is null`);
+        return
+      }
     this.props.onConfirm(inputValue, checkBoxChecked);
     this.closeModal();
   };
 
   render() {
     const { modalVisible, inputValue, checkBoxChecked } = this.state;
-    
+    console.log('EditModal render');
     return (
       <View style={styles.container}>
-        {/* <TouchableOpacity style={styles.openButton} onPress={this.openModal}>
-          <Text style={styles.openButtonText}>Open Modal</Text>
-        </TouchableOpacity> */}
 
         <Modal
           transparent={true}
           visible={modalVisible}
-          animationType="slide"
+          animationType="none"//'none' | 'slide' | 'fade'
           onRequestClose={this.closeModal}
         >
           <KeyboardAvoidingView style={styles.modalContainer} behavior="padding">
-            <View style={styles.overlay} />
+            {/* <View style={styles.overlay} /> */}
+            <TouchableOpacity style={styles.overlay} onPress={this.closeModal}>
+            </TouchableOpacity>
+
             <View style={styles.modalContent}>
               <TouchableOpacity
                 style={[styles.checkBoxContainer, checkBoxChecked && styles.checkBoxChecked]}
                 onPress={() => this.setState({ checkBoxChecked: !checkBoxChecked })}
               >
-                <Text style={styles.checkBoxText}>{checkBoxChecked ? '✓' : ''}</Text>
+                <Text style={styles.checkBoxText}>{checkBoxChecked ? '' : ''}</Text>
               </TouchableOpacity>
               <TextInput
                 style={styles.input}
@@ -134,9 +148,11 @@ class EditModal extends Component<EditModalProps, EditModalState> {
                 autoFocus={true}
               />
               <TouchableOpacity style={styles.confirmButton} onPress={this.handleConfirm}>
-                <Text style={styles.confirmButtonText}>Confirm</Text>
+                <Text style={styles.confirmButtonText}> ↑ </Text>
               </TouchableOpacity>
+            
             </View>
+
           </KeyboardAvoidingView>
         </Modal>
 

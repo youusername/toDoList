@@ -27,7 +27,8 @@ class AppState {
        inProgress.push(todo)
      }
    });
-   const sections = [
+
+  const sections = [
      {
        title: '进行中',
        data: inProgress,
@@ -39,20 +40,24 @@ class AppState {
    ];
    return sections;
  }
+
  @computed get completedCount() {
   console.log("AppState completedCount")
   return this.todos.filter(todo => todo.CheckBoxState).length
 }
+
   findTodo = (id: number) => {
     console.log("AppState.findTodo id:"+id)
     return this.todos.find((todo: any) => todo.id === id)
   }
 
-  @action addTodo = (text: string) => {
+  @action addTodo = (text: string,CheckBoxState: boolean = false) => {
+    console.log("AppState.addTodo text:["+text+"]  CheckBoxState:["+CheckBoxState+"]")
+
     const todo = {
       id: this.todos.length,
       text,
-      CheckBoxState: false,
+      CheckBoxState,
       favoritesState: false,
     }
     this.todos.unshift(todo)
@@ -60,21 +65,25 @@ class AppState {
   }
 
   getCellTitle = (id: number) => {
+    console.log("AppState.getCellTitle id:"+id);
     const todo = this.findTodo(id);
     return todo ? todo.text : '';
   }
 
   getFavoritesState = (id: number) => {
+    console.log("AppState.getFavoritesState id:"+id);
     const todo = this.findTodo(id);
     return todo ? todo.favoritesState : false;
   }
 
   getCheckBoxState = (id: number) => {
+    console.log("AppState.getCheckBoxState id:"+id);
     const todo = this.findTodo(id);
     return todo ? todo.CheckBoxState : false;
   }
 
   @action deleteTodo = (id: number) => {
+    console.log("AppState.deleteTodo id:"+id);
     const todo = this.findTodo(id);
     if (todo) {
       this.todos = this.todos.filter(t => t.id !== id);
@@ -82,6 +91,7 @@ class AppState {
   }
 
   @action editTodo = (id: number, text: string) => {
+    console.log("AppState.editTodo id:["+id+"] text:["+text+"]");
     const todo = this.findTodo(id);
     if (todo) {
       todo.text = text;
@@ -94,7 +104,6 @@ class AppState {
     if (todo) {
       todo.CheckBoxState = !todo.CheckBoxState;
     }
-    // console.log("AppState.completeTodo.id:["+id+"]  CheckBoxState:["+todo.CheckBoxState);
 
   }
 
@@ -104,7 +113,6 @@ class AppState {
     if (todo) {
       todo.favoritesState = !todo.favoritesState;
     }
-    // console.log("AppState.favoritesTodo.id:["+id+"]  favoritesState:["+todo.favoritesState);
   }
 }
 

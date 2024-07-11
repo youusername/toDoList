@@ -13,11 +13,13 @@ const styles = StyleSheet.create({
 });
 
 class IconCheckBox extends Component<any,any> {
+
   static propTypes: {
     checkOn: PropTypes.Validator<string>; 
     checkOff: PropTypes.Validator<string>; 
     stateChecked: PropTypes.Validator<boolean>; 
     };
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -29,7 +31,7 @@ class IconCheckBox extends Component<any,any> {
   render() {
     const {stateChecked, checkOn, checkOff ,onPress=() =>{}} = this.props;
     const { size = 30 } = this.props;
-    // console.log("iconcheckbox.render:"+JSON.stringify(todo, null, 2));
+
     return (
 
       <TouchableOpacity style={[styles.checkBoxContainer,{ width: size, height: size }]} onPress={onPress}>

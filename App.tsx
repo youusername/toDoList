@@ -10,7 +10,7 @@ const initialState = []
 
 for (var i = 0; i < 5; i++) {
   initialState.push({
-    text: 'Item' + i,
+    text: 'Item' + (i+1),
     id: i+1,
     CheckBoxState: Boolean(i%2),
     favoritesState: !Boolean(i%2),

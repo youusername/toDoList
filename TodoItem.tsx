@@ -2,7 +2,7 @@
 import { observer } from 'mobx-react'
 import { observable } from 'mobx'
 import React, { Component } from 'react'
-import { SectionList, View, SafeAreaView,StyleSheet,Text,Alert } from 'react-native'
+import { SectionList, View, TouchableOpacity,StyleSheet,Text,Alert } from 'react-native'
 import IconCheckBox from './IconCheckBox';
 import FavoritesCheckBox from './IconCheckBox';
 import PropTypes from 'prop-types'
@@ -12,7 +12,9 @@ import AppState from './appstate'
 class TodoItem extends Component<any,any> {
   static propTypes: { todo: PropTypes.Validator<object>; store: PropTypes.Validator<object>; };
 
-
+  handleLongClick = () => {
+    console.log("TodoItem handleLongClick")
+  };
   constructor(props: any) {
     super(props);
 
@@ -29,7 +31,10 @@ class TodoItem extends Component<any,any> {
             
             <>
             <IconCheckBox checkOn='●' checkOff='◯' stateChecked={todo.CheckBoxState} todo={todo} onPress={() => store.completeTodo(todo.id)}/>
+            
+            <TouchableOpacity style={[styles.title]} onLongPress={()=>this.handleLongClick()} activeOpacity={1}>
             <Text style={[styles.title,todo.CheckBoxState ? styles.strikethroughText : {}]}>{todo.text}</Text>
+            </TouchableOpacity>
             <FavoritesCheckBox checkOn='★' checkOff='☆' stateChecked={todo.favoritesState} todo={todo}onPress={() => store.favoritesTodo(todo.id)}/>
             </>
         )
