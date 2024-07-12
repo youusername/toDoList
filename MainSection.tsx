@@ -123,9 +123,8 @@ class MainSection extends Component<any,any> {
               // store.addTodo('new todo')
             }} />
             
-            {/* <View style={styles.container}> */}
-              <EditModal ref={this.editModalRef} onConfirm = {this.handleConfirm} />
-            {/* </View> */}
+            <EditModal ref={this.editModalRef} onConfirm = {this.handleConfirm} />
+            
           </SafeAreaView>
           
     )
