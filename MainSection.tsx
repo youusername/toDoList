@@ -3,7 +3,6 @@ import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 import { SectionList, View, SafeAreaView,StyleSheet,Text,Alert } from 'react-native'
 import IconCheckBox from './IconCheckBox';
-// import cellDataModel from './tools/cellDataModel'
 import TodoItem from './TodoItem';
 import EditModal from './EditModal';
 
@@ -37,12 +36,7 @@ const TodoList = observer((par:any) => (
 
     <View style={styles.item}>
       {/* {console.log("MainSection.TodoList todo:"+JSON.stringify(par.todo, null, 2))} */}
-      {/* {console.log("MainSection.TodoList store:"+JSON.stringify(par.store, null, 2))} */}
-      <TodoItem todo={par.todo} store={par.store}/>
-
-      {/* {par.store.visibleTodos.map((todo: any) =>
-      <TodoItem todo={todo} store={par.store} />
-    )} */}
+      <TodoItem todo={par.todo} store={par.store} onLongPress={par.onLongPress}/>
       
     </View>
     </>
@@ -64,27 +58,20 @@ class MainSection extends Component<any,any> {
   };
 
 
-  handleCheckBoxToggle = (_:any) => {
+  handleLongPress = (id:number) => {
     // Alert.alert(`CheckBox is now '}`+newState);
-    console.log('1234');
+    console.log('MainSection handleLongPress id:',id);
+    this.editModalRef.current?.openModalFromID(id);
 
   };
-  handleConfirm = (text:String, isChecked:any) => {
-    console.log('MainSection handleConfirm');
 
-    console.log('Text:', text);
-    this.props.store.addTodo(text,isChecked)
-  };
   static propTypes: { store: PropTypes.Validator<object>; };
 
   render() {
     console.log("MainSection.render");
     const { store } = this.props;
     // console.log("MainSection.store:"+store);
-    // console.log("MainSection.storeVisibleTodos:"+store.visibleTodos);
-    // console.log("MainSection.storeVisibleTodos:"+JSON.stringify(store.visibleTodos, null, 2));
- 
-    // {console.log("MainSection.render store:"+JSON.stringify(store, null, 2))}
+
     return (
       
         <SafeAreaView style={styles.safeArea}>
@@ -96,13 +83,12 @@ class MainSection extends Component<any,any> {
 
             keyExtractor={(item, index) => (item.text + index)}
             
-            renderItem={({item}) => (<TodoList todo={item} store={store}/>) }
+            renderItem={({item}) => (<TodoList todo={item} store={store} onLongPress={(id:number)=>{this.handleLongPress(id)}}/>) }
 
             renderSectionHeader={({section: {title}}) => (
               <Text style={styles.header}>{title}</Text>
             )}
 
-            // react/no-unstable-nested-components
             ItemSeparatorComponent={() => {
               // 声明项目之间的分割符
               return (
@@ -120,10 +106,11 @@ class MainSection extends Component<any,any> {
 
               console.log('MainSection IconCheckBox onPress')
               this.openEditModal()
+              
               // store.addTodo('new todo')
             }} />
             
-            <EditModal ref={this.editModalRef} onConfirm = {this.handleConfirm} />
+            <EditModal ref={this.editModalRef} store={store}/>
             
           </SafeAreaView>
           

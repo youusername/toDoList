@@ -1,11 +1,8 @@
 import { observable, computed, action } from 'mobx'
 
-
 class AppState {
 
   @observable todos: any[] = [];
-
-
   constructor(initialTodos: any) {
     this.todos = initialTodos || []
   }
@@ -19,7 +16,7 @@ class AppState {
     console.log("AppState visibleSectionListTodos")
     const inProgress: any[] = []
     const doneProgress: any[] = []
-    this.todos.forEach(todo => {
+    this.todos.forEach((todo:any) => {
      console.log(todo);
      if (todo.CheckBoxState){
        doneProgress.push(todo)
@@ -43,7 +40,7 @@ class AppState {
 
  @computed get completedCount() {
   console.log("AppState completedCount")
-  return this.todos.filter(todo => todo.CheckBoxState).length
+  return this.todos.filter((todo:any) => todo.CheckBoxState).length
 }
 
   findTodo = (id: number) => {
@@ -60,7 +57,9 @@ class AppState {
       CheckBoxState,
       favoritesState: false,
     }
-    this.todos.unshift(todo)
+    // this.todos.unshift(todo)
+    this.todos.push(todo)
+    // console.log("AppState addTodo todos:"+JSON.stringify(this.todos, null, 2))
     return todo
   }
 
@@ -86,15 +85,17 @@ class AppState {
     console.log("AppState.deleteTodo id:"+id);
     const todo = this.findTodo(id);
     if (todo) {
-      this.todos = this.todos.filter(t => t.id !== id);
+      this.todos = this.todos.filter((t) => t.id !== id);
     }
+
   }
 
-  @action editTodo = (id: number, text: string) => {
+  @action editTodo = (id: number, text: string, CheckState: boolean) => {
     console.log("AppState.editTodo id:["+id+"] text:["+text+"]");
     const todo = this.findTodo(id);
     if (todo) {
       todo.text = text;
+      todo.CheckBoxState = CheckState;
     }
   }
 

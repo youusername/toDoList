@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { Alert, View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, KeyboardAvoidingView } from 'react-native';
-
 import { observer } from 'mobx-react';
 
 interface EditModalProps {
-  onConfirm: (inputValue: string, checkBoxChecked: boolean) => void;
+  store:any;
 }
 
 interface EditModalState {
   modalVisible: boolean;
   inputValue: string;
   checkBoxChecked: boolean;
+  currentToDoID :number;
 }
 
 const styles = StyleSheet.create({
@@ -77,6 +77,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginLeft: 10,
   },
+  deleteButton: {
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderWidth: 0.5,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  deleteButtonText: {
+    color: 'red',
+    fontSize: 16,
+  },
   confirmButtonText: {
     color: 'white',
     fontSize: 16,
@@ -91,33 +102,57 @@ class EditModal extends Component<EditModalProps, EditModalState> {
       modalVisible: false,
       inputValue: '',
       checkBoxChecked: false,
+      currentToDoID :-1,
     };
+
   }
+  
 
   openModal = (text: string='',CheckBoxState: boolean = false) => {
     console.log('EditModal openModal');
     this.setState({ modalVisible: true ,inputValue: text, checkBoxChecked: CheckBoxState });
   };
+  openModalFromID = (id:number) => {
+    console.log('EditModal openModalFromID:'+id);
+    let t_todo = this.props.store.findTodo(id)
+    console.log('EditModal openModalFromID text:'+t_todo.text);
+    this.setState({ modalVisible: true ,inputValue: t_todo.text, checkBoxChecked: t_todo.CheckBoxState, currentToDoID:t_todo.id});
+  };
+  deleteData = () => {
+    const { currentToDoID } = this.state;
+    console.log('EditModal deleteDataFromID:'+currentToDoID);
+    this.props.store.deleteTodo(currentToDoID)
+    this.closeModal()
+  };
 
   closeModal = () => {
     console.log('EditModal closeModal');
-    this.setState({ modalVisible: false, inputValue: '', checkBoxChecked: false });
+    this.setState({ modalVisible: false, inputValue: '', checkBoxChecked: false , currentToDoID:-1});
   };
 
   handleConfirm = () => {
     console.log('EditModal handleConfirm');
     
-    const { inputValue, checkBoxChecked } = this.state;
+    const { inputValue, checkBoxChecked, currentToDoID } = this.state;
     if(inputValue.length<=0){
-        Alert.alert(`todo title is null`);
-        return
+        Alert.alert(`todo title is null`,'',[{text: "OK", onPress: () => {this.closeModal()}}]);
       }
-    this.props.onConfirm(inputValue, checkBoxChecked);
-    this.closeModal();
+    else
+      {
+        if(currentToDoID === -1){
+          console.log('EditModal handleConfirm new');
+          this.props.store.addTodo(inputValue,checkBoxChecked)
+        }else{
+          console.log('EditModal handleConfirm edit');
+          this.props.store.editTodo(currentToDoID,inputValue,checkBoxChecked)
+        }
+        this.closeModal();
+      }
+    
   };
 
   render() {
-    const { modalVisible, inputValue, checkBoxChecked } = this.state;
+    const { modalVisible, inputValue, checkBoxChecked, currentToDoID } = this.state;
     console.log('EditModal render');
     return (
       <View style={styles.container}>
@@ -129,7 +164,7 @@ class EditModal extends Component<EditModalProps, EditModalState> {
           onRequestClose={this.closeModal}
         >
           <KeyboardAvoidingView style={styles.modalContainer} behavior="padding">
-            {/* <View style={styles.overlay} /> */}
+
             <TouchableOpacity style={styles.overlay} onPress={this.closeModal}>
             </TouchableOpacity>
 
@@ -147,6 +182,12 @@ class EditModal extends Component<EditModalProps, EditModalState> {
                 placeholder="Enter text"
                 autoFocus={true}
               />
+              {currentToDoID === -1 ?
+              <></>
+              : <TouchableOpacity style={styles.deleteButton} onPress={this.deleteData}>
+                <Text style={styles.deleteButtonText}>删除</Text>
+                </TouchableOpacity>
+              }
               <TouchableOpacity style={styles.confirmButton} onPress={this.handleConfirm}>
                 <Text style={styles.confirmButtonText}> ↑ </Text>
               </TouchableOpacity>
