@@ -1,16 +1,26 @@
-import React, { Component } from 'react';
-import { Alert, View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, KeyboardAvoidingView } from 'react-native';
-import { observer } from 'mobx-react';
+import React, {Component} from 'react';
+import {
+  Alert,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  KeyboardAvoidingView,
+} from 'react-native';
+import {observer} from 'mobx-react';
 
 interface EditModalProps {
-  store:any;
+  store: any;
+  modalVisible: boolean;
+  itemID: number;
+  onRequestClose?: () => void;
 }
 
 interface EditModalState {
-  modalVisible: boolean;
   inputValue: string;
   checkBoxChecked: boolean;
-  currentToDoID :number;
 }
 
 const styles = StyleSheet.create({
@@ -18,7 +28,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'red',
+    backgroundColor: 'red',
     width: 0,
     height: 0,
   },
@@ -99,106 +109,129 @@ class EditModal extends Component<EditModalProps, EditModalState> {
   constructor(props: EditModalProps) {
     super(props);
     this.state = {
-      modalVisible: false,
       inputValue: '',
       checkBoxChecked: false,
-      currentToDoID :-1,
     };
-
   }
-  
 
-  openModal = (text: string='',CheckBoxState: boolean = false) => {
-    console.log('EditModal openModal');
-    this.setState({ modalVisible: true ,inputValue: text, checkBoxChecked: CheckBoxState });
+  handleShow = () => {
+    this.openModal();
   };
-  openModalFromID = (id:number) => {
-    console.log('EditModal openModalFromID:'+id);
-    let t_todo = this.props.store.findTodo(id)
-    console.log('EditModal openModalFromID text:'+t_todo.text);
-    this.setState({ modalVisible: true ,inputValue: t_todo.text, checkBoxChecked: t_todo.CheckBoxState, currentToDoID:t_todo.id});
+  openModal = (text: string = '', CheckBoxState: boolean = false) => {
+    if (this.props.itemID === -1) {
+      console.log('EditModal openModal');
+      this.setState({inputValue: text, checkBoxChecked: CheckBoxState});
+    } else {
+      console.log('EditModal openModal FromID');
+      this.openModalFromID(this.props.itemID);
+    }
+  };
+  openModalFromID = (id: number) => {
+    console.log('EditModal openModalFromID:' + id);
+    let t_todo = this.props.store.findTodo(id);
+    console.log('EditModal openModalFromID text:' + t_todo.text);
+    this.setState({
+      inputValue: t_todo.text,
+      checkBoxChecked: t_todo.CheckBoxState,
+    });
   };
   deleteData = () => {
-    const { currentToDoID } = this.state;
-    console.log('EditModal deleteDataFromID:'+currentToDoID);
-    this.props.store.deleteTodo(currentToDoID)
-    this.closeModal()
+    console.log('EditModal deleteDataFromID:' + this.props.itemID);
+    this.props.store.deleteTodo(this.props.itemID);
+    this.closeModal();
   };
 
   closeModal = () => {
     console.log('EditModal closeModal');
-    this.setState({ modalVisible: false, inputValue: '', checkBoxChecked: false , currentToDoID:-1});
+    this.setState({inputValue: '', checkBoxChecked: false});
+    this.props.onRequestClose?.();
   };
 
   handleConfirm = () => {
     console.log('EditModal handleConfirm');
-    
-    const { inputValue, checkBoxChecked, currentToDoID } = this.state;
-    if(inputValue.length<=0){
-        Alert.alert(`todo title is null`,'',[{text: "OK", onPress: () => {this.closeModal()}}]);
+
+    const {inputValue, checkBoxChecked} = this.state;
+    if (inputValue.length <= 0) {
+      Alert.alert(`todo title is null`, '', [
+        {
+          text: 'OK',
+          onPress: () => {
+            this.closeModal();
+          },
+        },
+      ]);
+    } else {
+      if (this.props.itemID === -1) {
+        console.log('EditModal handleConfirm new');
+        this.props.store.addTodo(inputValue, checkBoxChecked);
+      } else {
+        console.log('EditModal handleConfirm edit');
+        this.props.store.editTodo(
+          this.props.itemID,
+          inputValue,
+          checkBoxChecked,
+        );
       }
-    else
-      {
-        if(currentToDoID === -1){
-          console.log('EditModal handleConfirm new');
-          this.props.store.addTodo(inputValue,checkBoxChecked)
-        }else{
-          console.log('EditModal handleConfirm edit');
-          this.props.store.editTodo(currentToDoID,inputValue,checkBoxChecked)
-        }
-        this.closeModal();
-      }
-    
+      this.closeModal();
+    }
   };
 
   render() {
-    const { modalVisible, inputValue, checkBoxChecked, currentToDoID } = this.state;
+    const {inputValue, checkBoxChecked} = this.state;
     console.log('EditModal render');
     return (
       <View style={styles.container}>
-
         <Modal
           transparent={true}
-          visible={modalVisible}
-          animationType="none"//'none' | 'slide' | 'fade'
+          visible={this.props.modalVisible}
+          animationType="none" //'none' | 'slide' | 'fade'
           onRequestClose={this.closeModal}
-        >
-          <KeyboardAvoidingView style={styles.modalContainer} behavior="padding">
-
-            <TouchableOpacity style={styles.overlay} onPress={this.closeModal}>
-            </TouchableOpacity>
+          onShow={this.handleShow}>
+          <KeyboardAvoidingView
+            style={styles.modalContainer}
+            behavior="padding">
+            <TouchableOpacity
+              style={styles.overlay}
+              onPress={this.closeModal}></TouchableOpacity>
 
             <View style={styles.modalContent}>
               <TouchableOpacity
-                style={[styles.checkBoxContainer, checkBoxChecked && styles.checkBoxChecked]}
-                onPress={() => this.setState({ checkBoxChecked: !checkBoxChecked })}
-              >
-                <Text style={styles.checkBoxText}>{checkBoxChecked ? '' : ''}</Text>
+                style={[
+                  styles.checkBoxContainer,
+                  checkBoxChecked && styles.checkBoxChecked,
+                ]}
+                onPress={() =>
+                  this.setState({checkBoxChecked: !checkBoxChecked})
+                }>
+                <Text style={styles.checkBoxText}>
+                  {checkBoxChecked ? '' : ''}
+                </Text>
               </TouchableOpacity>
               <TextInput
                 style={styles.input}
                 value={inputValue}
-                onChangeText={(text) => this.setState({ inputValue: text })}
+                onChangeText={(text) => this.setState({inputValue: text})}
                 placeholder="Enter text"
                 autoFocus={true}
               />
-              {currentToDoID === -1 ?
-              <></>
-              : <TouchableOpacity style={styles.deleteButton} onPress={this.deleteData}>
-                <Text style={styles.deleteButtonText}>删除</Text>
+              {this.props.itemID === -1 ? (
+                <></>
+              ) : (
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={this.deleteData}>
+                  <Text style={styles.deleteButtonText}>删除</Text>
                 </TouchableOpacity>
-              }
-              <TouchableOpacity style={styles.confirmButton} onPress={this.handleConfirm}>
+              )}
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={this.handleConfirm}>
                 <Text style={styles.confirmButtonText}> ↑ </Text>
               </TouchableOpacity>
-            
             </View>
-
           </KeyboardAvoidingView>
         </Modal>
-
       </View>
-
     );
   }
 }
