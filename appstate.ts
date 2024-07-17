@@ -1,5 +1,12 @@
 import { observable, computed, action } from 'mobx'
 
+export interface todo {
+  id: number;
+  text: string;
+  CheckBoxState: boolean;
+  favoritesState: boolean;
+}
+
 class AppState {
 
   @observable todos: any[] = [];
@@ -51,7 +58,7 @@ class AppState {
   @action addTodo = (text: string,CheckBoxState: boolean = false) => {
     console.log("AppState.addTodo text:["+text+"]  CheckBoxState:["+CheckBoxState+"]")
 
-    const todo = {
+    const todo:todo = {
       id: this.todos.length,
       text,
       CheckBoxState,

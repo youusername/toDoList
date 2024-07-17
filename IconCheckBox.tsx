@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Text, TouchableOpacity, StyleSheet} from 'react-native';
-import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   checkBoxContainer: {
@@ -12,13 +11,15 @@ const styles = StyleSheet.create({
   },
 });
 
-class IconCheckBox extends Component<any, any> {
-  static propTypes: {
-    checkOn: PropTypes.Validator<string>;
-    checkOff: PropTypes.Validator<string>;
-    stateChecked: PropTypes.Validator<boolean>;
-  };
+interface IconCheckBoxProps {
+  stateChecked: boolean;
+  checkOn: string;
+  checkOff: string;
+  onPress?: () => void;
+  size: number;
+}
 
+class IconCheckBox extends Component<IconCheckBoxProps> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -27,8 +28,13 @@ class IconCheckBox extends Component<any, any> {
   }
 
   render() {
-    const {stateChecked, checkOn, checkOff, onPress = () => {}} = this.props;
-    const {size = 30} = this.props;
+    const {
+      stateChecked,
+      checkOn,
+      checkOff,
+      onPress = () => {},
+      size = 30,
+    } = this.props;
 
     return (
       <TouchableOpacity
@@ -41,11 +47,5 @@ class IconCheckBox extends Component<any, any> {
     );
   }
 }
-
-IconCheckBox.propTypes = {
-  stateChecked: PropTypes.bool.isRequired,
-  checkOn: PropTypes.string.isRequired,
-  checkOff: PropTypes.string.isRequired,
-};
 
 export default IconCheckBox;

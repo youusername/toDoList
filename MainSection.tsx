@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {observer} from 'mobx-react';
-import PropTypes from 'prop-types';
 import {
   SectionList,
   View,
@@ -13,6 +12,7 @@ import IconCheckBox from './IconCheckBox';
 import TodoItem from './TodoItem';
 import EditModal from './EditModal';
 import {observable} from 'mobx';
+import AppState from './appstate';
 
 const styles = StyleSheet.create({
   container: {
@@ -51,24 +51,24 @@ const TodoList = observer((par: any) => (
   </>
 ));
 
+interface MainSectionProps {
+  store: AppState;
+}
+
 @observer
-class MainSection extends Component<any, any> {
-  // @observable selectedItemId: number | null = null;
+class MainSection extends Component<MainSectionProps> {
   @observable selectedItemId = -1;
   @observable modalVisible = false;
-  // editModalRef: React.RefObject<EditModal>
+
   constructor(props: any) {
     super(props);
-    // this.editModalRef = React.createRef();
   }
 
   openEditModal = () => {
-    // this.editModalRef.current?.openModal();
     this.selectedItemId = -1;
     this.modalVisible = true;
   };
   closeEditModal = () => {
-    // this.editModalRef.current?.closeModal();
     this.selectedItemId = -1;
     this.modalVisible = false;
   };
@@ -80,10 +80,7 @@ class MainSection extends Component<any, any> {
     console.log('MainSection handleLongPress id:', id);
     this.selectedItemId = id;
     this.modalVisible = true;
-    // this.editModalRef.current?.openModalFromID(id);
   };
-
-  static propTypes: {store: PropTypes.Validator<object>};
 
   render() {
     console.log('MainSection.render');
@@ -92,8 +89,6 @@ class MainSection extends Component<any, any> {
 
     return (
       <SafeAreaView style={styles.safeArea}>
-        {/* <TodoList store={store} /> */}
-
         <SectionList
           sections={store.visibleSectionListTodos()}
           keyExtractor={(item, index) => item.text + index}
@@ -128,14 +123,13 @@ class MainSection extends Component<any, any> {
           checkOn="➕"
           checkOff="➕"
           stateChecked={false}
-          todo={null}
           size={55}
           onPress={() => {
             console.log('MainSection IconCheckBox onPress');
             this.openEditModal();
           }}
         />
-        {/* <EditModal modalVisible={this.modalVisible} ref={this.editModalRef} store={store}/> */}
+
         <EditModal
           modalVisible={this.modalVisible}
           itemID={this.selectedItemId}
@@ -148,9 +142,5 @@ class MainSection extends Component<any, any> {
     );
   }
 }
-
-MainSection.propTypes = {
-  store: PropTypes.object.isRequired,
-};
 
 export default MainSection;

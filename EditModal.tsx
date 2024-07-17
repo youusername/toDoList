@@ -10,9 +10,10 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import {observer} from 'mobx-react';
+import AppState from 'appstate';
 
 interface EditModalProps {
-  store: any;
+  store: AppState;
   modalVisible: boolean;
   itemID: number;
   onRequestClose?: () => void;
