@@ -1,25 +1,35 @@
 import React, {Component} from 'react';
 import MainSection from './MainSection';
 import AppState from './appstate';
+import {View, Text} from 'react-native';
+import {createStackNavigator, createAppContainer} from 'react-navigation';
+import DetailsSection from './DetailsSection';
 
-const initialState = [];
+const AppNavigator = createStackNavigator(
+  {
+    Home: {
+      screen: MainSection,
+      navigationOptions: {
+        title: 'ToDoList22',
+        headerTitle: 'ToDoList111',
+      },
+    },
+    Page1: {
+      screen: DetailsSection,
+    },
+  },
+  {
+    initialRouteName: 'Home',
+  },
+);
 
-for (var i = 0; i < 5; i++) {
-  initialState.push({
-    text: 'Item' + (i + 1),
-    id: i,
-    CheckBoxState: Boolean(i % 2),
-    favoritesState: !Boolean(i % 2),
-  });
-}
+const AppContainer = createAppContainer(AppNavigator);
 
-const store = new AppState(initialState);
-
-class App extends Component {
+export default class App extends React.Component {
   render() {
     console.log('App.render');
-    return <MainSection store={store} />;
+    return <AppContainer />;
   }
 }
 
-export default App;
+// export default App;

@@ -2,28 +2,26 @@ import {observer} from 'mobx-react';
 import React, {Component} from 'react';
 import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import IconCheckBox from './IconCheckBox';
-import FavoritesCheckBox from './IconCheckBox';
 import AppState, {todo} from 'appstate';
 
 interface IconCheckBoxProps {
   todo: todo;
   store: AppState;
   onLongPress: (id: number) => void;
-  onPress: (id: number) => void;
 }
 
 @observer
-class TodoItem extends Component<IconCheckBoxProps> {
+class DetailsItem extends Component<IconCheckBoxProps> {
   constructor(props: any) {
     super(props);
   }
   render() {
-    const {todo, store, onLongPress, onPress} = this.props;
-    // console.log("TodoItem render:"+todo.id +"  CheckBoxState:"+todo.CheckBoxState);
-    console.log('TodoItem render');
+    const {todo, store, onLongPress} = this.props;
+    // console.log("DetailsItem render:"+todo.id +"  CheckBoxState:"+todo.CheckBoxState);
+    console.log('DetailsItem render');
 
     return (
-      console.log('TodoItem.render.return'),
+      console.log('DetailsItem.render.return'),
       (
         <View style={styles.container}>
           <IconCheckBox
@@ -39,9 +37,6 @@ class TodoItem extends Component<IconCheckBoxProps> {
             onLongPress={() => {
               onLongPress(todo.id);
             }}
-            onPress={() => {
-              onPress(todo.id);
-            }}
             activeOpacity={1}>
             <Text
               style={[
@@ -51,13 +46,6 @@ class TodoItem extends Component<IconCheckBoxProps> {
               {todo.text}
             </Text>
           </TouchableOpacity>
-          <FavoritesCheckBox
-            checkOn="★"
-            checkOff="☆"
-            stateChecked={todo.favoritesState}
-            size={30}
-            onPress={() => store.favoritesTodo(todo.id)}
-          />
         </View>
       )
     );
@@ -71,7 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // alignItems: 'center',
     backgroundColor: 'white',
-    // padding: 10,
+    marginLeft: 25,
   },
   title: {
     fontSize: 24,
@@ -88,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TodoItem;
+export default DetailsItem;

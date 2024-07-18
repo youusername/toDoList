@@ -4,7 +4,7 @@ import {Text, TouchableOpacity, StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
   checkBoxContainer: {
     alignItems: 'center',
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
   },
   checkBoxText: {
     fontSize: 28,

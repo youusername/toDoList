@@ -13,7 +13,20 @@ import TodoItem from './TodoItem';
 import EditModal from './EditModal';
 import {observable} from 'mobx';
 import AppState from './appstate';
+import {NavigationContainer, NavigationScreenProp} from 'react-navigation';
 
+const initialState = [];
+
+for (var i = 0; i < 5; i++) {
+  initialState.push({
+    text: 'Item' + (i + 1),
+    id: i,
+    CheckBoxState: Boolean(i % 2),
+    favoritesState: !Boolean(i % 2),
+  });
+}
+
+const store = new AppState(initialState);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -22,15 +35,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#806B33',
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: '#fff',
     padding: 10,
     // marginVertical: 8,
     flexDirection: 'row',
+    borderRadius: 5,
+    // margin: 5,
+    marginTop: 2.5,
+    marginBottom: 0,
+    marginLeft: 5,
+    marginRight: 5,
   },
 
   header: {
     fontSize: 32,
-    backgroundColor: '#fff',
+    color: '#fff',
+    backgroundColor: '#4b5bb3',
   },
   safeArea: {
     backgroundColor: '#4b5bb3',
@@ -46,17 +66,23 @@ const TodoList = observer((par: any) => (
         todo={par.todo}
         store={par.store}
         onLongPress={par.onLongPress}
+        onPress={par.onPress}
       />
     </View>
   </>
 ));
+type Navigation = NavigationScreenProp<void>;
 
-interface MainSectionProps {
-  store: AppState;
+export interface Props {
+  navigation: Navigation;
 }
-
 @observer
-class MainSection extends Component<MainSectionProps> {
+class MainSection extends Component<Props> {
+  static navigationOptions = {
+    title: 'Home1111111',
+    headerBackTitle: '返回哈哈', //设置返回此页面的返回按钮文案，有长度限制
+  };
+
   @observable selectedItemId = -1;
   @observable modalVisible = false;
 
@@ -83,8 +109,9 @@ class MainSection extends Component<MainSectionProps> {
   };
 
   render() {
-    console.log('MainSection.render');
-    const {store} = this.props;
+    const {navigation} = this.props;
+    console.log('MainSection.render:');
+
     // console.log("MainSection.store:"+store);
 
     return (
@@ -99,6 +126,9 @@ class MainSection extends Component<MainSectionProps> {
               onLongPress={(id: number) => {
                 this.handleLongPress(id);
               }}
+              onPress={(id: number) => {
+                navigation.navigate('Page1', {store: store, id: id});
+              }}
             />
           )}
           renderSectionHeader={({section: {title}}) => (
@@ -107,14 +137,16 @@ class MainSection extends Component<MainSectionProps> {
           ItemSeparatorComponent={() => {
             return (
               // react-native/no-inline-styles
-              <View style={{borderBottomWidth: 1, borderBottomColor: 'red'}} />
+              // <View style={{borderBottomWidth: 1, borderBottomColor: 'red'}} />
+              <></>
             );
           }}
           ListHeaderComponent={() => {
             return (
-              <Text style={{fontSize: 30, textAlign: 'center', color: '#ffff'}}>
-                ToDoList
-              </Text>
+              // <Text style={{fontSize: 30, textAlign: 'center', color: '#ffff'}}>
+              //   ToDoList
+              // </Text>
+              <></>
             );
           }}
         />
@@ -126,7 +158,7 @@ class MainSection extends Component<MainSectionProps> {
           size={55}
           onPress={() => {
             console.log('MainSection IconCheckBox onPress');
-            this.openEditModal();
+            // this.openEditModal();
           }}
         />
 
