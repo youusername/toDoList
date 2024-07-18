@@ -17,6 +17,26 @@ class TodoItem extends Component<IconCheckBoxProps> {
   constructor(props: any) {
     super(props);
   }
+
+  getSubTitle = (todo: todo) => {
+    const subTodos: todo[] = todo.subTodos!;
+    if (subTodos.length === 0) {
+      return '';
+    }
+
+    let inProgressCount: number = 0;
+    let text: string = '';
+
+    subTodos.forEach((subtodo: any) => {
+      console.log(todo);
+      if (todo.CheckBoxState) {
+        inProgressCount += 1;
+      }
+    });
+
+    return '第' + inProgressCount + '步,共' + subTodos.length + '步';
+  };
+
   render() {
     const {todo, store, onLongPress, onPress} = this.props;
     // console.log("TodoItem render:"+todo.id +"  CheckBoxState:"+todo.CheckBoxState);
@@ -37,7 +57,7 @@ class TodoItem extends Component<IconCheckBoxProps> {
           <TouchableOpacity
             style={[styles.title]}
             onLongPress={() => {
-              onLongPress(todo.id);
+              // onLongPress(todo.id);
             }}
             onPress={() => {
               onPress(todo.id);
@@ -50,6 +70,11 @@ class TodoItem extends Component<IconCheckBoxProps> {
               ]}>
               {todo.text}
             </Text>
+            {todo.subTodos?.length ? (
+              <Text>{this.getSubTitle(todo)}</Text>
+            ) : (
+              <></>
+            )}
           </TouchableOpacity>
           <FavoritesCheckBox
             checkOn="★"
@@ -69,7 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // padding: 20,
     flexDirection: 'row',
-    // alignItems: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
     // padding: 10,
   },

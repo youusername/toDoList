@@ -12,10 +12,16 @@ import IconCheckBox from './IconCheckBox';
 import TodoItem from './TodoItem';
 import EditModal from './EditModal';
 import {observable} from 'mobx';
-import AppState from './appstate';
+import AppState, {todo} from './appstate';
 import {NavigationContainer, NavigationScreenProp} from 'react-navigation';
 
 const initialState = [];
+const subTodo: todo = {
+  id: 12,
+  text: 'subTodo test',
+  CheckBoxState: false,
+  favoritesState: false,
+};
 
 for (var i = 0; i < 5; i++) {
   initialState.push({
@@ -23,6 +29,7 @@ for (var i = 0; i < 5; i++) {
     id: i,
     CheckBoxState: Boolean(i % 2),
     favoritesState: !Boolean(i % 2),
+    subTodos: i === 4 ? [subTodo] : [],
   });
 }
 

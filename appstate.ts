@@ -5,11 +5,14 @@ export interface todo {
   text: string;
   CheckBoxState: boolean;
   favoritesState: boolean;
+  subTodos?:[];
+
 }
 
 class AppState {
 
   @observable todos: any[] = [];
+
   constructor(initialTodos: any) {
     this.todos = initialTodos || []
   }
@@ -63,11 +66,28 @@ class AppState {
       text,
       CheckBoxState,
       favoritesState: false,
+      subTodos:[],
     }
     // this.todos.unshift(todo)
     this.todos.push(todo)
     // console.log("AppState addTodo todos:"+JSON.stringify(this.todos, null, 2))
-    return todo
+    // return todo
+  }
+
+  @action addSubTodo = (supID:number, text: string,CheckBoxState: boolean = false) => {
+    console.log("AppState addSubTodo text:["+text+"]  CheckBoxState:["+CheckBoxState+"]")
+
+    const supTodo = this.findTodo(supID)
+    const todo:todo = {
+      id: this.todos.length,
+      text,
+      CheckBoxState,
+      favoritesState: false,
+    }
+
+    supTodo.subTodos.push(todo)
+    // console.log("AppState addTodo todos:"+JSON.stringify(this.todos, null, 2))
+    // return todo
   }
 
   getCellTitle = (id: number) => {
