@@ -87,10 +87,11 @@ export interface Props {
 class MainSection extends Component<Props> {
   static navigationOptions = {
     title: 'Home1111111',
-    headerBackTitle: '返回哈哈', //设置返回此页面的返回按钮文案，有长度限制
+    headerBackTitle: '首页', //设置返回此页面的返回按钮文案，有长度限制
   };
 
   @observable selectedItemId = -1;
+  @observable selectedSubItemId = -1;
   @observable modalVisible = false;
 
   constructor(props: any) {
@@ -165,13 +166,15 @@ class MainSection extends Component<Props> {
           size={55}
           onPress={() => {
             console.log('MainSection IconCheckBox onPress');
-            // this.openEditModal();
+            this.openEditModal();
           }}
         />
 
         <EditModal
           modalVisible={this.modalVisible}
+          isDetails={false}
           itemID={this.selectedItemId}
+          itemSubID={this.selectedSubItemId}
           store={store}
           onRequestClose={() => {
             this.onRequestClose();

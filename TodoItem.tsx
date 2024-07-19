@@ -10,6 +10,7 @@ interface IconCheckBoxProps {
   store: AppState;
   onLongPress: (id: number) => void;
   onPress: (id: number) => void;
+  subTitleVisible?: boolean;
 }
 
 @observer
@@ -25,11 +26,10 @@ class TodoItem extends Component<IconCheckBoxProps> {
     }
 
     let inProgressCount: number = 0;
-    let text: string = '';
 
     subTodos.forEach((subtodo: any) => {
       console.log(todo);
-      if (todo.CheckBoxState) {
+      if (subtodo.CheckBoxState) {
         inProgressCount += 1;
       }
     });
@@ -38,7 +38,13 @@ class TodoItem extends Component<IconCheckBoxProps> {
   };
 
   render() {
-    const {todo, store, onLongPress, onPress} = this.props;
+    const {
+      todo,
+      store,
+      onLongPress,
+      onPress,
+      subTitleVisible = true,
+    } = this.props;
     // console.log("TodoItem render:"+todo.id +"  CheckBoxState:"+todo.CheckBoxState);
     console.log('TodoItem render');
 
@@ -66,11 +72,13 @@ class TodoItem extends Component<IconCheckBoxProps> {
             <Text
               style={[
                 styles.title,
-                todo.CheckBoxState ? styles.strikethroughText : {},
+                todo.CheckBoxState && subTitleVisible
+                  ? styles.strikethroughText
+                  : {},
               ]}>
               {todo.text}
             </Text>
-            {todo.subTodos?.length ? (
+            {todo.subTodos?.length && subTitleVisible ? (
               <Text>{this.getSubTitle(todo)}</Text>
             ) : (
               <></>

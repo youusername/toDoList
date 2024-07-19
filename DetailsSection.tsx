@@ -1,18 +1,25 @@
 import React, {Component} from 'react';
 import {observer} from 'mobx-react';
 import {TouchableOpacity, View, Text, StyleSheet, FlatList} from 'react-native';
-import FavoritesCheckBox from './IconCheckBox';
 import DetailsItem from './DetailsItem';
 import AppState, {todo} from './appstate';
 import {NavigationScreenProp} from 'react-navigation';
+import TodoItem from './TodoItem';
+import EditModal from './EditModal';
+import {observable} from 'mobx';
 
 type Navigation = NavigationScreenProp<void>;
 
 export interface Props {
   navigation: Navigation;
 }
+
 @observer
 export default class DetailsSection extends React.Component<Props> {
+  @observable selectedItemId = this.props.navigation.getParam('id');
+  @observable modalVisible = false;
+  @observable selectedSubItemId = -1;
+
   render() {
     const {navigation} = this.props;
     const {state, setParams} = navigation;
@@ -21,37 +28,34 @@ export default class DetailsSection extends React.Component<Props> {
       'DetailsSection render params:' + JSON.stringify(params, null, 2),
     );
 
-    const toDoCheckBoxChecked = false;
-    const store = navigation.getParam('store');
+    const store: AppState = navigation.getParam('store');
     const todo: todo = store.findTodo(navigation.getParam('id'));
-    const favoritesState = false;
 
+    if (!todo) {
+      return;
+    }
     const testSubTodo: todo = {
-      id: 12,
-      text: 'DetailsSection test',
+      id: 999,
+      text: '+ 下一步',
       CheckBoxState: false,
       favoritesState: false,
     };
-    let flatListData = ['testTodo'];
-    flatListData.push('add');
-    // console.log('DetailsSection flatListData:' + flatListData);
+    // console.log(
+    //   'DetailsSection subTodos:' + JSON.stringify(todo.subTodos!, null, 2),
+    // );
+
+    const flatListData = todo.subTodos!.slice();
+    flatListData.push(testSubTodo);
+
+    console.log('DetailsSection flatListData:' + flatListData);
     return (
       <>
         <View style={styles.container}>
-          <TouchableOpacity
-            style={[
-              styles.checkBoxContainer,
-              toDoCheckBoxChecked && styles.checkBoxChecked,
-            ]}
-            onPress={() =>
-              this.setState({checkBoxChecked: !toDoCheckBoxChecked})
-            }></TouchableOpacity>
-          <Text style={styles.header}>{todo.text}</Text>
-          <FavoritesCheckBox
-            checkOn="★"
-            checkOff="☆"
-            stateChecked={favoritesState}
-            size={30}
+          <TodoItem
+            todo={todo}
+            store={store}
+            subTitleVisible={false}
+            onLongPress={() => {}}
             onPress={() => {}}
           />
         </View>
@@ -60,24 +64,32 @@ export default class DetailsSection extends React.Component<Props> {
             data={flatListData} // Split description into lines
             // renderItem={({item}) => <Text style={styles.subItem}>{item}</Text>}
             renderItem={({item}) =>
-              item !== 'add' ? (
+              item.id !== 999 ? (
                 <DetailsItem
-                  todo={testSubTodo}
+                  todo={item}
+                  superID={this.selectedItemId}
                   store={store}
-                  onLongPress={(id: number) => {}}
+                  onPress={(id: number) => {
+                    // this.selectedItemId = id;
+                    this.selectedSubItemId = id;
+                    this.modalVisible = true;
+                  }}
                 />
               ) : (
                 <TouchableOpacity
                   style={styles.addsubItemTouchable}
                   onPress={() => {
-                    console.log('DetailsSection onLongPress add');
+                    //下一步
+                    console.log('DetailsSection onPress add');
+                    this.selectedSubItemId = -1;
+                    this.modalVisible = true;
                   }}
                   activeOpacity={1}>
-                  <Text style={[styles.addSubItem]}>{'+ 下一步'}</Text>
+                  <Text style={[styles.addSubItem]}>{item.text}</Text>
                 </TouchableOpacity>
               )
             }
-            keyExtractor={(item) => item}
+            keyExtractor={(item, index) => '' + item.id + index}
             ItemSeparatorComponent={() => {
               return (
                 // react-native/no-inline-styles
@@ -85,8 +97,21 @@ export default class DetailsSection extends React.Component<Props> {
               );
             }}
           />
-          {/* <Text style={styles.footer}>Next Step</Text> */}
         </View>
+
+        <EditModal
+          modalVisible={this.modalVisible}
+          isDetails={true}
+          itemID={this.selectedItemId}
+          itemSubID={this.selectedSubItemId}
+          store={store}
+          onRequestClose={() => {
+            // this.onRequestClose();
+            console.log('DetailsSection onRequestClose');
+            this.selectedSubItemId = -1;
+            this.modalVisible = false;
+          }}
+        />
       </>
     );
   }

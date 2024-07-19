@@ -16,6 +16,8 @@ interface EditModalProps {
   store: AppState;
   modalVisible: boolean;
   itemID: number;
+  itemSubID: number;
+  isDetails: boolean;
   onRequestClose?: () => void;
 }
 
@@ -114,17 +116,28 @@ class EditModal extends Component<EditModalProps, EditModalState> {
       checkBoxChecked: false,
     };
   }
-
   handleShow = () => {
+    console.log('EditModal handleShow');
     this.openModal();
   };
+
   openModal = (text: string = '', CheckBoxState: boolean = false) => {
-    if (this.props.itemID === -1) {
-      console.log('EditModal openModal');
-      this.setState({inputValue: text, checkBoxChecked: CheckBoxState});
+    if (this.props.isDetails) {
+      if (this.props.itemSubID === -1) {
+        console.log('EditModal openModal Details');
+        this.setState({inputValue: text, checkBoxChecked: CheckBoxState});
+      } else {
+        console.log('EditModal openModal Sub FromID');
+        this.openModalFromSubID(this.props.itemID, this.props.itemSubID);
+      }
     } else {
-      console.log('EditModal openModal FromID');
-      this.openModalFromID(this.props.itemID);
+      if (this.props.itemID === -1) {
+        console.log('EditModal openModal');
+        this.setState({inputValue: text, checkBoxChecked: CheckBoxState});
+      } else {
+        console.log('EditModal openModal FromID');
+        this.openModalFromID(this.props.itemID);
+      }
     }
   };
   openModalFromID = (id: number) => {
@@ -136,9 +149,20 @@ class EditModal extends Component<EditModalProps, EditModalState> {
       checkBoxChecked: t_todo.CheckBoxState,
     });
   };
+  openModalFromSubID = (id: number, subID: number) => {
+    console.log('EditModal openModalFromID:' + id);
+    let t_subTodo = this.props.store.findSubTodo(id, subID);
+    console.log('EditModal openModalFromID text:' + t_subTodo.text);
+    this.setState({
+      inputValue: t_subTodo.text,
+      checkBoxChecked: t_subTodo.CheckBoxState,
+    });
+  };
   deleteData = () => {
     console.log('EditModal deleteDataFromID:' + this.props.itemID);
-    this.props.store.deleteTodo(this.props.itemID);
+    this.props.isDetails
+      ? this.props.store.deleteSubTodo(this.props.itemID, this.props.itemSubID)
+      : this.props.store.deleteTodo(this.props.itemID);
     this.closeModal();
   };
 
@@ -162,16 +186,31 @@ class EditModal extends Component<EditModalProps, EditModalState> {
         },
       ]);
     } else {
-      if (this.props.itemID === -1) {
+      if (this.props.itemID === -1 || this.props.itemSubID === -1) {
         console.log('EditModal handleConfirm new');
-        this.props.store.addTodo(inputValue, checkBoxChecked);
+        this.props.isDetails
+          ? (this.props.store.addSubTodo(
+              this.props.itemID,
+              inputValue,
+              checkBoxChecked,
+            ),
+            console.log('EditModal handleConfirm new addSubTodo'))
+          : (this.props.store.addTodo(inputValue, checkBoxChecked),
+            console.log('EditModal handleConfirm new addTodo'));
       } else {
         console.log('EditModal handleConfirm edit');
-        this.props.store.editTodo(
-          this.props.itemID,
-          inputValue,
-          checkBoxChecked,
-        );
+        this.props.isDetails
+          ? this.props.store.editSubTodo(
+              this.props.itemID,
+              this.props.itemSubID,
+              inputValue,
+              checkBoxChecked,
+            )
+          : this.props.store.editTodo(
+              this.props.itemID,
+              inputValue,
+              checkBoxChecked,
+            );
       }
       this.closeModal();
     }
@@ -179,6 +218,7 @@ class EditModal extends Component<EditModalProps, EditModalState> {
 
   render() {
     const {inputValue, checkBoxChecked} = this.state;
+
     console.log('EditModal render');
     return (
       <View style={styles.container}>
@@ -215,7 +255,7 @@ class EditModal extends Component<EditModalProps, EditModalState> {
                 placeholder="Enter text"
                 autoFocus={true}
               />
-              {this.props.itemID === -1 ? (
+              {this.props.itemID === -1 || this.props.itemSubID === -1 ? (
                 <></>
               ) : (
                 <TouchableOpacity

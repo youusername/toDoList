@@ -6,8 +6,9 @@ import AppState, {todo} from 'appstate';
 
 interface IconCheckBoxProps {
   todo: todo;
+  superID: number;
   store: AppState;
-  onLongPress: (id: number) => void;
+  onPress: (id: number) => void;
 }
 
 @observer
@@ -16,7 +17,7 @@ class DetailsItem extends Component<IconCheckBoxProps> {
     super(props);
   }
   render() {
-    const {todo, store, onLongPress} = this.props;
+    const {todo, store, onPress, superID} = this.props;
     // console.log("DetailsItem render:"+todo.id +"  CheckBoxState:"+todo.CheckBoxState);
     console.log('DetailsItem render');
 
@@ -28,14 +29,14 @@ class DetailsItem extends Component<IconCheckBoxProps> {
             checkOn="●"
             checkOff="◯"
             stateChecked={todo.CheckBoxState}
-            onPress={() => store.completeTodo(todo.id)}
+            onPress={() => store.completeSubTodo(superID, todo.id)}
             size={30}
           />
 
           <TouchableOpacity
             style={[styles.title]}
-            onLongPress={() => {
-              onLongPress(todo.id);
+            onPress={() => {
+              onPress(todo.id);
             }}
             activeOpacity={1}>
             <Text

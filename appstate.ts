@@ -5,7 +5,7 @@ export interface todo {
   text: string;
   CheckBoxState: boolean;
   favoritesState: boolean;
-  subTodos?:[];
+  subTodos?:todo[];
 
 }
 
@@ -24,9 +24,9 @@ class AppState {
 
   visibleSectionListTodos() {
     console.log("AppState visibleSectionListTodos")
-    const inProgress: any[] = []
-    const doneProgress: any[] = []
-    this.todos.forEach((todo:any) => {
+    const inProgress: todo[] = []
+    const doneProgress: todo[] = []
+    this.todos.forEach((todo:todo) => {
      console.log(todo);
      if (todo.CheckBoxState){
        doneProgress.push(todo)
@@ -57,6 +57,12 @@ class AppState {
     console.log("AppState.findTodo id:"+id)
     return this.todos.find((todo: any) => todo.id === id)
   }
+  findSubTodo = (id: number,subId: number) => {
+    console.log("AppState.findSubTodo id:"+subId)
+     const todo = this.todos.find((todo: todo) => todo.id === id)
+     const subTodo = todo.subTodos.find((subTodo:todo) => subTodo.id === subId)
+     return subTodo
+  }
 
   @action addTodo = (text: string,CheckBoxState: boolean = false) => {
     console.log("AppState.addTodo text:["+text+"]  CheckBoxState:["+CheckBoxState+"]")
@@ -79,15 +85,14 @@ class AppState {
 
     const supTodo = this.findTodo(supID)
     const todo:todo = {
-      id: this.todos.length,
+      id: supTodo.subTodos.length,
       text,
       CheckBoxState,
       favoritesState: false,
     }
 
     supTodo.subTodos.push(todo)
-    // console.log("AppState addTodo todos:"+JSON.stringify(this.todos, null, 2))
-    // return todo
+
   }
 
   getCellTitle = (id: number) => {
@@ -117,6 +122,14 @@ class AppState {
 
   }
 
+  @action deleteSubTodo = (id: number,subId: number) => {
+    console.log("AppState.deleteSubTodo id:"+subId);
+    const todo:todo = this.findTodo(id);
+    if (todo) {
+      todo.subTodos = todo.subTodos!.filter((t:todo) => t.id !== subId);
+    }
+  }
+
   @action editTodo = (id: number, text: string, CheckState: boolean) => {
     console.log("AppState.editTodo id:["+id+"] text:["+text+"]");
     const todo = this.findTodo(id);
@@ -125,12 +138,28 @@ class AppState {
       todo.CheckBoxState = CheckState;
     }
   }
+  @action editSubTodo = (id: number,subId: number, text: string, CheckState: boolean) => {
+    console.log("AppState.editTodo id:["+id+"] text:["+text+"]");
+    const subTodo = this.findSubTodo(id,subId);
+    if (subTodo) {
+      subTodo.text = text;
+      subTodo.CheckBoxState = CheckState;
+    }
+  }
 
   completeTodo = (id: number) => {
     console.log("AppState.completeTodo id:"+id);
     const todo = this.findTodo(id);
     if (todo) {
       todo.CheckBoxState = !todo.CheckBoxState;
+    }
+
+  }
+  completeSubTodo = (id: number,subId:number) => {
+    console.log("AppState.completeSubTodo id:"+id);
+    const subTodo = this.findSubTodo(id,subId);
+    if (subTodo) {
+      subTodo.CheckBoxState = !subTodo.CheckBoxState;
     }
 
   }
