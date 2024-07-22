@@ -56,23 +56,22 @@ class DetailsItem extends Component<IconCheckBoxProps> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // padding: 20,
     flexDirection: 'row',
-    // alignItems: 'center',
-    backgroundColor: 'white',
+    alignItems: 'center',
+    marginBottom: 0,
     marginLeft: 25,
+    height: 50,
   },
   title: {
     fontSize: 24,
     fontFamily: 'Avenir',
     backgroundColor: '#fff',
     alignContent: 'center',
-    flex: 3,
-    // margin:5,
+    flex: 1,
+    flexDirection: 'row',
   },
   strikethroughText: {
     textDecorationLine: 'line-through',
-    // fontSize: 20,
     color: '#000',
   },
 });

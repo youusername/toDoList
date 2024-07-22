@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import MainSection from './MainSection';
-import AppState from './appstate';
-import {View, Text} from 'react-native';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
 import DetailsSection from './DetailsSection';
 
@@ -12,10 +10,21 @@ const AppNavigator = createStackNavigator(
       navigationOptions: {
         title: 'ToDoList22',
         headerTitle: 'ToDoList111',
+        header: null,
       },
     },
     Page1: {
       screen: DetailsSection,
+      navigationOptions: {
+        headerStyle: {
+          // backgroundColor: '#f4511e',
+          height: 34 + 47,
+        },
+        headerTintColor: '#000',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      },
     },
   },
   {
