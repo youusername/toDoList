@@ -2,10 +2,10 @@ import {observer} from 'mobx-react';
 import React, {Component} from 'react';
 import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import IconCheckBox from './IconCheckBox';
-import AppState, {todo} from 'appstate';
+import AppState, {Todo} from 'appstate';
 
 interface IconCheckBoxProps {
-  todo: todo;
+  todo: Todo;
   superID: number;
   store: AppState;
   onPress: (id: number) => void;
@@ -13,7 +13,7 @@ interface IconCheckBoxProps {
 
 @observer
 class DetailsItem extends Component<IconCheckBoxProps> {
-  constructor(props: any) {
+  constructor(props: IconCheckBoxProps) {
     super(props);
   }
   render() {

@@ -7,11 +7,6 @@ const AppNavigator = createStackNavigator(
   {
     Home: {
       screen: MainSection,
-      navigationOptions: {
-        title: 'ToDoList22',
-        headerTitle: 'ToDoList111',
-        header: null,
-      },
     },
     Page1: {
       screen: DetailsSection,

@@ -1,19 +1,19 @@
 import { observable, computed, action } from 'mobx'
 
-export interface todo {
+export interface Todo {
   id: number;
   text: string;
   CheckBoxState: boolean;
   favoritesState: boolean;
-  subTodos?:todo[];
+  subTodos?:Todo[];
 
 }
 
 class AppState {
 
-  @observable todos: any[] = [];
+  @observable todos: Todo[] = [];
 
-  constructor(initialTodos: any) {
+  constructor(initialTodos: Todo[]) {
     this.todos = initialTodos || []
   }
 
@@ -24,9 +24,9 @@ class AppState {
 
   visibleSectionListTodos() {
     console.log("AppState visibleSectionListTodos")
-    const inProgress: todo[] = []
-    const doneProgress: todo[] = []
-    this.todos.forEach((todo:todo) => {
+    const inProgress: Todo[] = []
+    const doneProgress: Todo[] = []
+    this.todos.forEach((todo:Todo) => {
      console.log(todo);
      if (todo.CheckBoxState){
        doneProgress.push(todo)
@@ -50,7 +50,7 @@ class AppState {
 
  @computed get completedCount() {
   console.log("AppState completedCount")
-  return this.todos.filter((todo:any) => todo.CheckBoxState).length
+  return this.todos.filter((todo:Todo) => todo.CheckBoxState).length
 }
 
   findTodo = (id: number) => {
@@ -59,15 +59,15 @@ class AppState {
   }
   findSubTodo = (id: number,subId: number) => {
     console.log("AppState.findSubTodo id:"+subId)
-     const todo = this.todos.find((todo: todo) => todo.id === id)
-     const subTodo = todo.subTodos.find((subTodo:todo) => subTodo.id === subId)
+     const find_todo = this.todos.find((todo: Todo) => todo.id === id)
+     const subTodo = find_todo!.subTodos!.find((subTodo:Todo) => subTodo.id === subId)
      return subTodo
   }
 
   @action addTodo = (text: string,CheckBoxState: boolean = false) => {
     console.log("AppState.addTodo text:["+text+"]  CheckBoxState:["+CheckBoxState+"]")
 
-    const todo:todo = {
+    const todo:Todo = {
       id: this.todos.length,
       text,
       CheckBoxState,
@@ -84,14 +84,14 @@ class AppState {
     console.log("AppState addSubTodo text:["+text+"]  CheckBoxState:["+CheckBoxState+"]")
 
     const supTodo = this.findTodo(supID)
-    const todo:todo = {
-      id: supTodo.subTodos.length,
+    const todo:Todo = {
+      id: supTodo!.subTodos!.length,
       text,
       CheckBoxState,
       favoritesState: false,
     }
 
-    supTodo.subTodos.push(todo)
+    supTodo!.subTodos!.push(todo)
 
   }
 
@@ -124,9 +124,9 @@ class AppState {
 
   @action deleteSubTodo = (id: number,subId: number) => {
     console.log("AppState.deleteSubTodo id:"+subId);
-    const todo:todo = this.findTodo(id);
+    const todo:Todo = this.findTodo(id)!;
     if (todo) {
-      todo.subTodos = todo.subTodos!.filter((t:todo) => t.id !== subId);
+      todo.subTodos = todo.subTodos!.filter((t:Todo) => t.id !== subId);
     }
   }
 

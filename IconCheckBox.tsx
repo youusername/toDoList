@@ -20,7 +20,7 @@ interface IconCheckBoxProps {
 }
 
 class IconCheckBox extends Component<IconCheckBoxProps> {
-  constructor(props: any) {
+  constructor(props: IconCheckBoxProps) {
     super(props);
     this.state = {
       checked: false,

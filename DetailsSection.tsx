@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {observer} from 'mobx-react';
 import {TouchableOpacity, View, Text, StyleSheet, FlatList} from 'react-native';
 import DetailsItem from './DetailsItem';
-import AppState, {todo} from './appstate';
+import AppState, {Todo} from './appstate';
 import {NavigationScreenProp} from 'react-navigation';
 import TodoItem from './TodoItem';
 import EditModal from './EditModal';
@@ -16,6 +16,16 @@ export interface Props {
 
 @observer
 export default class DetailsSection extends React.Component<Props> {
+  static navigationOptions = {
+    headerStyle: {
+      // backgroundColor: '#f4511e',
+      height: 34 + 47,
+    },
+    headerTintColor: '#000',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  };
   @observable selectedItemId = this.props.navigation.getParam('id');
   @observable modalVisible = false;
   @observable selectedSubItemId = -1;
@@ -29,12 +39,12 @@ export default class DetailsSection extends React.Component<Props> {
     );
 
     const store: AppState = navigation.getParam('store');
-    const todo: todo = store.findTodo(navigation.getParam('id'));
+    const todo: Todo = store.findTodo(navigation.getParam('id'))!;
 
     if (!todo) {
       return;
     }
-    const testSubTodo: todo = {
+    const testSubTodo: Todo = {
       id: 999,
       text: '+ 下一步',
       CheckBoxState: false,

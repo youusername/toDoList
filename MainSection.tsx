@@ -9,14 +9,14 @@ import {
   Alert,
 } from 'react-native';
 import IconCheckBox from './IconCheckBox';
-import TodoItem from './TodoItem';
+import TodoItem, {TodoCheckBoxProps} from './TodoItem';
 import EditModal from './EditModal';
 import {observable} from 'mobx';
-import AppState, {todo} from './appstate';
+import AppState, {Todo} from './appstate';
 import {NavigationContainer, NavigationScreenProp} from 'react-navigation';
 
 const initialState = [];
-const subTodo: todo = {
+const subTodo: Todo = {
   id: 12,
   text: 'subTodo test',
   CheckBoxState: false,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const TodoList = observer((par: any) => (
+const TodoList = observer((par: TodoCheckBoxProps) => (
   <>
     <View style={styles.item}>
       {/* {console.log("MainSection.TodoList todo:"+JSON.stringify(par.todo, null, 2))} */}
@@ -88,13 +88,14 @@ class MainSection extends Component<Props> {
   static navigationOptions = {
     title: 'Home1111111',
     headerBackTitle: '首页', //设置返回此页面的返回按钮文案，有长度限制
+    header: null,
   };
 
   @observable selectedItemId = -1;
   @observable selectedSubItemId = -1;
   @observable modalVisible = false;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
   }
 

@@ -143,19 +143,19 @@ class EditModal extends Component<EditModalProps, EditModalState> {
   openModalFromID = (id: number) => {
     console.log('EditModal openModalFromID:' + id);
     let t_todo = this.props.store.findTodo(id);
-    console.log('EditModal openModalFromID text:' + t_todo.text);
+    console.log('EditModal openModalFromID text:' + t_todo!.text);
     this.setState({
-      inputValue: t_todo.text,
-      checkBoxChecked: t_todo.CheckBoxState,
+      inputValue: t_todo!.text,
+      checkBoxChecked: t_todo!.CheckBoxState,
     });
   };
   openModalFromSubID = (id: number, subID: number) => {
     console.log('EditModal openModalFromID:' + id);
     let t_subTodo = this.props.store.findSubTodo(id, subID);
-    console.log('EditModal openModalFromID text:' + t_subTodo.text);
+    console.log('EditModal openModalFromID text:' + t_subTodo!.text);
     this.setState({
-      inputValue: t_subTodo.text,
-      checkBoxChecked: t_subTodo.CheckBoxState,
+      inputValue: t_subTodo!.text,
+      checkBoxChecked: t_subTodo!.CheckBoxState,
     });
   };
   deleteData = () => {

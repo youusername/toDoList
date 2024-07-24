@@ -3,10 +3,10 @@ import React, {Component} from 'react';
 import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import IconCheckBox from './IconCheckBox';
 import FavoritesCheckBox from './IconCheckBox';
-import AppState, {todo} from 'appstate';
+import AppState, {Todo} from 'appstate';
 
-interface IconCheckBoxProps {
-  todo: todo;
+export interface TodoCheckBoxProps {
+  todo: Todo;
   store: AppState;
   onLongPress: (id: number) => void;
   onPress: (id: number) => void;
@@ -14,20 +14,20 @@ interface IconCheckBoxProps {
 }
 
 @observer
-class TodoItem extends Component<IconCheckBoxProps> {
-  constructor(props: any) {
+class TodoItem extends Component<TodoCheckBoxProps> {
+  constructor(props: TodoCheckBoxProps) {
     super(props);
   }
 
-  getSubTitle = (todo: todo) => {
-    const subTodos: todo[] = todo.subTodos!;
+  getSubTitle = (todo: Todo) => {
+    const subTodos: Todo[] = todo.subTodos!;
     if (subTodos.length === 0) {
       return '';
     }
 
     let inProgressCount: number = 0;
 
-    subTodos.forEach((subtodo: any) => {
+    subTodos.forEach((subtodo: Todo) => {
       console.log(todo);
       if (subtodo.CheckBoxState) {
         inProgressCount += 1;
