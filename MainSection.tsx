@@ -149,6 +149,7 @@ class MainSection extends Component<Props> {
             {visibleSectionList.map((section) =>
               section.data.map((item) => (
                 <TodoList
+                  key={item.id}
                   todo={item}
                   store={store}
                   onLongPress={(id: number) => {

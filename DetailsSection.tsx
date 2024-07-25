@@ -83,7 +83,7 @@ export default class DetailsSection extends React.Component<Props> {
         <ScrollView style={styles.flatList}>
           {flatListData.map((subTodo) =>
             subTodo.id !== 999 ? (
-              <>
+              <View key={subTodo.id}>
                 <DetailsItem
                   todo={subTodo}
                   superID={this.selectedItemId}
@@ -94,9 +94,10 @@ export default class DetailsSection extends React.Component<Props> {
                   }}
                 />
                 <View style={styles.itemSeparator} />
-              </>
+              </View>
             ) : (
               <TouchableOpacity
+                key={subTodo.id}
                 style={styles.addsubItemTouchable}
                 onPress={() => {
                   //下一步
