@@ -61,7 +61,7 @@ class TodoItem extends Component<TodoCheckBoxProps> {
           />
 
           <TouchableOpacity
-            style={[styles.title]}
+            style={[styles.titleTouchable]}
             onLongPress={() => {
               // onLongPress(todo.id);
             }}
@@ -84,13 +84,15 @@ class TodoItem extends Component<TodoCheckBoxProps> {
               <></>
             )}
           </TouchableOpacity>
-          <FavoritesCheckBox
-            checkOn="★"
-            checkOff="☆"
-            stateChecked={todo.favoritesState}
-            size={30}
-            onPress={() => store.favoritesTodo(todo.id)}
-          />
+          <View style={styles.favorites}>
+            <FavoritesCheckBox
+              checkOn="★"
+              checkOff="☆"
+              stateChecked={todo.favoritesState}
+              size={30}
+              onPress={() => store.favoritesTodo(todo.id)}
+            />
+          </View>
         </View>
       )
     );
@@ -99,20 +101,29 @@ class TodoItem extends Component<TodoCheckBoxProps> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 3,
     // padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
     // padding: 10,
   },
+
   title: {
     fontSize: 24,
     fontFamily: 'Avenir',
     backgroundColor: '#fff',
-    alignContent: 'center',
+  },
+  titleTouchable: {
+    flexDirection: 'column',
+    fontSize: 24,
+    fontFamily: 'Avenir',
+    backgroundColor: '#fff',
     flex: 3,
-    // margin:5,
+  },
+  favorites: {
+    marginRight: 0,
+    backgroundColor: '#fff',
   },
   strikethroughText: {
     textDecorationLine: 'line-through',

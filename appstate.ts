@@ -22,7 +22,7 @@ class AppState {
     return this.todos
   }
 
-  visibleSectionListTodos() {
+  @computed get visibleSectionListTodos() {
     console.log("AppState visibleSectionListTodos")
     const inProgress: Todo[] = []
     const doneProgress: Todo[] = []
@@ -55,7 +55,7 @@ class AppState {
 
   findTodo = (id: number) => {
     console.log("AppState.findTodo id:"+id)
-    return this.todos.find((todo: any) => todo.id === id)
+    return this.todos.find((todo: Todo) => todo.id === id)
   }
   findSubTodo = (id: number,subId: number) => {
     console.log("AppState.findSubTodo id:"+subId)

@@ -7,13 +7,18 @@ import {
   StyleSheet,
   Text,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import IconCheckBox from './IconCheckBox';
 import TodoItem, {TodoCheckBoxProps} from './TodoItem';
 import EditModal from './EditModal';
 import {observable} from 'mobx';
 import AppState, {Todo} from './appstate';
-import {NavigationContainer, NavigationScreenProp} from 'react-navigation';
+import {
+  NavigationContainer,
+  NavigationScreenProp,
+  ScrollView,
+} from 'react-navigation';
 
 const initialState = [];
 const subTodo: Todo = {
@@ -62,6 +67,20 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: '#4b5bb3',
     flex: 1,
+  },
+  addTouchable: {
+    // backgroundColor: '#fff',
+    width: 50,
+    height: 50,
+    alignContent: 'center',
+    justifyContent: 'center',
+    marginTop: 200,
+  },
+  addTouchableText: {
+    fontSize: 50,
+    alignContent: 'center',
+    justifyContent: 'center',
+    color: 'blue',
   },
 });
 
@@ -122,54 +141,36 @@ class MainSection extends Component<Props> {
     console.log('MainSection.render:');
 
     // console.log("MainSection.store:"+store);
-
+    const visibleSectionList = store.visibleSectionListTodos;
     return (
       <SafeAreaView style={styles.safeArea}>
-        <SectionList
-          sections={store.visibleSectionListTodos()}
-          keyExtractor={(item, index) => item.text + index}
-          renderItem={({item}) => (
-            <TodoList
-              todo={item}
-              store={store}
-              onLongPress={(id: number) => {
-                this.handleLongPress(id);
+        <>
+          <ScrollView>
+            {visibleSectionList.map((section) =>
+              section.data.map((item) => (
+                <TodoList
+                  todo={item}
+                  store={store}
+                  onLongPress={(id: number) => {
+                    this.handleLongPress(id);
+                  }}
+                  onPress={(id: number) => {
+                    navigation.navigate('Page1', {store: store, id: id});
+                  }}
+                />
+              )),
+            )}
+            <TouchableOpacity
+              style={[styles.addTouchable]}
+              onPress={() => {
+                console.log('MainSection IconCheckBox onPress');
+                this.openEditModal();
               }}
-              onPress={(id: number) => {
-                navigation.navigate('Page1', {store: store, id: id});
-              }}
-            />
-          )}
-          renderSectionHeader={({section: {title}}) => (
-            <Text style={styles.header}>{title}</Text>
-          )}
-          ItemSeparatorComponent={() => {
-            return (
-              // react-native/no-inline-styles
-              // <View style={{borderBottomWidth: 1, borderBottomColor: 'red'}} />
-              <></>
-            );
-          }}
-          ListHeaderComponent={() => {
-            return (
-              // <Text style={{fontSize: 30, textAlign: 'center', color: '#ffff'}}>
-              //   ToDoList
-              // </Text>
-              <></>
-            );
-          }}
-        />
-
-        <IconCheckBox
-          checkOn="➕"
-          checkOff="➕"
-          stateChecked={false}
-          size={55}
-          onPress={() => {
-            console.log('MainSection IconCheckBox onPress');
-            this.openEditModal();
-          }}
-        />
+              activeOpacity={1}>
+              <Text style={styles.addTouchableText}>{'➕'}</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </>
 
         <EditModal
           modalVisible={this.modalVisible}

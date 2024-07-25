@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import {observer} from 'mobx-react';
-import {TouchableOpacity, View, Text, StyleSheet, FlatList} from 'react-native';
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import DetailsItem from './DetailsItem';
 import AppState, {Todo} from './appstate';
 import {NavigationScreenProp} from 'react-navigation';
@@ -8,7 +14,11 @@ import TodoItem from './TodoItem';
 import EditModal from './EditModal';
 import {observable} from 'mobx';
 
-type Navigation = NavigationScreenProp<void>;
+interface NavigationParams {
+  id: number;
+  store: AppState;
+}
+type Navigation = NavigationScreenProp<void, NavigationParams>;
 
 export interface Props {
   navigation: Navigation;
@@ -69,45 +79,37 @@ export default class DetailsSection extends React.Component<Props> {
             onPress={() => {}}
           />
         </View>
-        <View style={styles.flatList}>
-          <FlatList
-            data={flatListData} // Split description into lines
-            // renderItem={({item}) => <Text style={styles.subItem}>{item}</Text>}
-            renderItem={({item}) =>
-              item.id !== 999 ? (
+
+        <ScrollView style={styles.flatList}>
+          {flatListData.map((subTodo) =>
+            subTodo.id !== 999 ? (
+              <>
                 <DetailsItem
-                  todo={item}
+                  todo={subTodo}
                   superID={this.selectedItemId}
                   store={store}
                   onPress={(id: number) => {
-                    // this.selectedItemId = id;
                     this.selectedSubItemId = id;
                     this.modalVisible = true;
                   }}
                 />
-              ) : (
-                <TouchableOpacity
-                  style={styles.addsubItemTouchable}
-                  onPress={() => {
-                    //下一步
-                    console.log('DetailsSection onPress add');
-                    this.selectedSubItemId = -1;
-                    this.modalVisible = true;
-                  }}
-                  activeOpacity={1}>
-                  <Text style={[styles.addSubItem]}>{item.text}</Text>
-                </TouchableOpacity>
-              )
-            }
-            keyExtractor={(item, index) => '' + item.id + index}
-            ItemSeparatorComponent={() => {
-              return (
-                // react-native/no-inline-styles
                 <View style={styles.itemSeparator} />
-              );
-            }}
-          />
-        </View>
+              </>
+            ) : (
+              <TouchableOpacity
+                style={styles.addsubItemTouchable}
+                onPress={() => {
+                  //下一步
+                  console.log('DetailsSection onPress add');
+                  this.selectedSubItemId = -1;
+                  this.modalVisible = true;
+                }}
+                activeOpacity={1}>
+                <Text style={[styles.addSubItem]}>{subTodo.text}</Text>
+              </TouchableOpacity>
+            ),
+          )}
+        </ScrollView>
 
         <EditModal
           modalVisible={this.modalVisible}
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
   },
   flatList: {
     // backgroundColor: '#4b5bb3',
-    flex: 1,
+    // flex: 1,
   },
   container: {
     // flex: 1,
@@ -177,20 +179,14 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     // flex: 3,
     marginBottom: 0,
+    marginTop: 10,
     marginLeft: 25,
     marginRight: 5,
   },
   addSubItem: {
     backgroundColor: '#fff',
-    padding: 10,
+    // padding: 10,
     color: 'blue',
     fontSize: 25,
-    // flexDirection: 'row',
-    // borderRadius: 5,
-    // margin: 5,
-    // marginTop: 2.5,
-    // marginBottom: 0,
-    // marginLeft: 25,
-    // marginRight: 5,
   },
 });
